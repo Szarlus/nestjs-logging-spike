@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
@@ -8,7 +8,17 @@ import { Post } from './entities/post.entity';
 export class PostsService {
   private posts: { [key: Post['id']]: Post } = {};
 
+  private readonly logger = new Logger(PostsService.name);
+
+  // Can be injected and set throught Pino's decorator, won't be lib-agnostic tho
+  // constructor(
+  //   @InjectPinoLogger(PostsService.name)
+  //   private readonly logger: PinoLogger,
+  // ) {}
+
   create(createPostDto: CreatePostDto) {
+    this.logger.log('Creating post with data %o', createPostDto);
+
     const id: Post['id'] = uuid();
 
     const post: Post = {
